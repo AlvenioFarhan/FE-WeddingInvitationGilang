@@ -12,7 +12,7 @@ export const request = (method, path) => {
       Accept: "application/json",
       "Content-Type": "application/json",
     }),
-    mode: "cors", // You can change to 'no-cors' if necessary, but it has limitations
+    mode: "no-cors", // You can change to 'no-cors' if necessary, but it has limitations
   };
 
   if (url.slice(-1) === "/") {
