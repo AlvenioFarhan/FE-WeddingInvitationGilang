@@ -12,30 +12,25 @@ export const request = (method, path) => {
       Accept: "application/json",
       "Content-Type": "application/json",
     }),
-    mode: "no-cors", // You can change to 'no-cors' if necessary, but it has limitations
   };
 
-  if (url.slice(-1) === "/") {
+  if (url.slice(-1) == "/") {
     url = url.slice(0, -1);
   }
 
   return {
     then(...params) {
       return fetch(url + path, req)
-        .then((res) => {
-          if (!res.ok) {
-            throw new Error(`HTTP error! status: ${res.status}`);
-          }
-          return res.json();
-        })
+        .then((res) => res.json())
         .then((res) => {
           if (res.error) {
-            throw new Error(res.error[0]);
+            throw res.error[0];
           }
+
           return res;
         })
         .then(...params)
-        .catch((err) => alert(err.message));
+        .catch((err) => alert(err));
     },
     download(...params) {
       return fetch(url + path, req)
@@ -43,17 +38,19 @@ export const request = (method, path) => {
           if (res.status === 200) {
             return res;
           }
-          throw new Error(`HTTP error! status: ${res.status}`);
+
+          return null;
         })
         .then(...params)
-        .catch((err) => alert(err.message));
+        .catch((err) => alert(err));
     },
     token(token) {
       if (token.split(".").length === 3) {
-        req.headers.set("Authorization", "Bearer " + token);
-      } else {
-        req.headers.set("x-access-key", token);
+        req.headers.append("Authorization", "Bearer " + token);
+        return this;
       }
+
+      req.headers.append("x-access-key", token);
       return this;
     },
     body(body) {
